@@ -21,7 +21,7 @@ class AzureOpenAiLLM {
       apiVersion: this.apiVersion,
       endpoint: process.env.AZURE_OPENAI_ENDPOINT,
     });
-    this.model = modelPreference ?? process.env.OPEN_MODEL_PREF;
+    this.model = modelPreference ?? process.env.AZURE_OPENAI_MODEL_PREF;
     this.isOTypeModel =
       process.env.AZURE_OPENAI_MODEL_TYPE === "reasoning" || false;
     this.limits = {
@@ -35,6 +35,11 @@ class AzureOpenAiLLM {
     this.#log(
       `Initialized. Model "${this.model}" @ ${this.promptWindowLimit()} tokens.\nAPI-Version: ${this.apiVersion}.\nModel Type: ${this.isOTypeModel ? "reasoning" : "default"}`
     );
+
+    if (!process.env.AZURE_OPENAI_MODEL_PREF)
+      throw new Error(
+        "No AZURE_OPENAI_MODEL_PREF ENV defined. This must the name of a deployment on your Azure account for an LLM chat model like GPT-3.5."
+      );
   }
 
   #log(text, ...args) {

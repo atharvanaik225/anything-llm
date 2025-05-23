@@ -15,7 +15,7 @@ class AzureOpenAiProvider extends Provider {
       apiVersion: "2024-12-01-preview",
     });
     super(client);
-    this.model = config.model ?? process.env.OPEN_MODEL_PREF;
+    this.model = config.model ?? process.env.AZURE_OPENAI_MODEL_PREF;
     this.verbose = true;
   }
   /**
