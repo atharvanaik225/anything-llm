@@ -33,7 +33,17 @@ const KEY_MAPPING = {
   },
   AzureOpenAiModelPref: {
     envKey: "AZURE_OPENAI_MODEL_PREF",
-    checks: [isNotEmpty],
+    checks: [
+      isNotEmpty,
+      (input, prevValue, nextValue) => {
+        if (process.env.LLM_PROVIDER === "azure" && process.env.OPEN_MODEL_PREF && !input) {
+          console.warn(
+            "\x1b[33m[AzureOpenAi] Warning: Using deprecated OPEN_MODEL_PREF environment variable. Please migrate to AZURE_OPENAI_MODEL_PREF.\x1b[0m"
+          );
+        }
+        return null;
+      }
+    ],
   },
   AzureOpenAiEmbeddingModelPref: {
     envKey: "EMBEDDING_MODEL_PREF",

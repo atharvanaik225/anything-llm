@@ -15,7 +15,16 @@ class AzureOpenAiProvider extends Provider {
       apiVersion: "2024-12-01-preview",
     });
     super(client);
-    this.model = config.model ?? process.env.AZURE_OPENAI_MODEL_PREF;
+    
+    // Backward compatibility for model preference
+    if (!process.env.AZURE_OPENAI_MODEL_PREF && process.env.OPEN_MODEL_PREF) {
+      console.warn(
+        "\x1b[33m[AzureOpenAi] Warning: Using deprecated OPEN_MODEL_PREF environment variable. Please migrate to AZURE_OPENAI_MODEL_PREF.\x1b[0m"
+      );
+      this.model = config.model ?? process.env.OPEN_MODEL_PREF;
+    } else {
+      this.model = config.model ?? process.env.AZURE_OPENAI_MODEL_PREF;
+    }
     this.verbose = true;
   }
   /**

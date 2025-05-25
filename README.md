@@ -77,7 +77,7 @@ AnythingLLM divides your documents into objects called `workspaces`. A Workspace
 - [Any open-source llama.cpp compatible model](/server/storage/models/README.md#text-generation-llm-selection)
 - [OpenAI](https://openai.com)
 - [OpenAI (Generic)](https://openai.com)
-- [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service)
+- [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service) ([Configuration Guide](/server/storage/models/AZURE_OPENAI.md))
 - [AWS Bedrock](https://aws.amazon.com/bedrock/)
 - [Anthropic](https://www.anthropic.com/)
 - [NVIDIA NIM (chat models)](https://build.nvidia.com/explore/discover)

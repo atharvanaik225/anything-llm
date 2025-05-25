@@ -21,7 +21,16 @@ class AzureOpenAiLLM {
       apiVersion: this.apiVersion,
       endpoint: process.env.AZURE_OPENAI_ENDPOINT,
     });
-    this.model = modelPreference ?? process.env.AZURE_OPENAI_MODEL_PREF;
+    
+    // Backward compatibility for model preference
+    if (!process.env.AZURE_OPENAI_MODEL_PREF && process.env.OPEN_MODEL_PREF) {
+      console.warn(
+        "\x1b[33m[AzureOpenAi] Warning: Using deprecated OPEN_MODEL_PREF environment variable. Please migrate to AZURE_OPENAI_MODEL_PREF.\x1b[0m"
+      );
+      this.model = modelPreference ?? process.env.OPEN_MODEL_PREF;
+    } else {
+      this.model = modelPreference ?? process.env.AZURE_OPENAI_MODEL_PREF;
+    }
     this.isOTypeModel =
       process.env.AZURE_OPENAI_MODEL_TYPE === "reasoning" || false;
     this.limits = {
@@ -36,10 +45,10 @@ class AzureOpenAiLLM {
       `Initialized. Model "${this.model}" @ ${this.promptWindowLimit()} tokens.\nAPI-Version: ${this.apiVersion}.\nModel Type: ${this.isOTypeModel ? "reasoning" : "default"}`
     );
 
-    if (!process.env.AZURE_OPENAI_MODEL_PREF)
+    if (!process.env.AZURE_OPENAI_MODEL_PREF && !process.env.OPEN_MODEL_PREF)
       throw new Error(
-        "No AZURE_OPENAI_MODEL_PREF ENV defined. This must the name of a deployment on your Azure account for an LLM chat model like GPT-3.5."
-    );
+        "No model preference defined. Please set either AZURE_OPENAI_MODEL_PREF (recommended) or OPEN_MODEL_PREF (deprecated) environment variable. This must be the name of a deployment on your Azure account for an LLM chat model like GPT-3.5."
+      );
   }
 
   #log(text, ...args) {
@@ -137,7 +146,7 @@ class AzureOpenAiLLM {
   async getChatCompletion(messages = [], { temperature = 0.7 }) {
     if (!this.model)
       throw new Error(
-        "No OPEN_MODEL_PREF ENV defined. This must the name of a deployment on your Azure account for an LLM chat model like GPT-3.5."
+        "No model preference defined. Please set either AZURE_OPENAI_MODEL_PREF (recommended) or OPEN_MODEL_PREF (deprecated) environment variable. This must be the name of a deployment on your Azure account for an LLM chat model like GPT-3.5."
       );
 
     const result = await LLMPerformanceMonitor.measureAsyncFunction(
@@ -169,7 +178,7 @@ class AzureOpenAiLLM {
   async streamGetChatCompletion(messages = [], { temperature = 0.7 }) {
     if (!this.model)
       throw new Error(
-        "No OPEN_MODEL_PREF ENV defined. This must the name of a deployment on your Azure account for an LLM chat model like GPT-3.5."
+        "No model preference defined. Please set either AZURE_OPENAI_MODEL_PREF (recommended) or OPEN_MODEL_PREF (deprecated) environment variable. This must be the name of a deployment on your Azure account for an LLM chat model like GPT-3.5."
       );
 
     const measuredStreamRequest = await LLMPerformanceMonitor.measureStream(
