@@ -39,7 +39,7 @@ class AzureOpenAiLLM {
     if (!process.env.AZURE_OPENAI_MODEL_PREF)
       throw new Error(
         "No AZURE_OPENAI_MODEL_PREF ENV defined. This must the name of a deployment on your Azure account for an LLM chat model like GPT-3.5."
-      );
+    );
   }
 
   #log(text, ...args) {
